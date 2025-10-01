@@ -119,16 +119,6 @@ elseif has("python")
     imap <C-K> <c-o> :pyf <C-R>=g:clang_format<cr><cr>
 endif
 
-"VIMPLUG STUFF                                                                   
-"Remember to install git and other stuff beforehand
-"First time remember to run :PlugInstall
-
-if empty(glob('~/.vim/autoload/plug.vim'))                                       
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs                       
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim        
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC                        
-endif         
-
 function! AckSign()
 	call append(line('$'), "")
 	call append(line('$'), "Acked-by: Alessio Faina <alessio.faina@canonical.com>")
@@ -143,6 +133,16 @@ function! CVEAddDefaultMessage()
 	call append(line('.')+3, "Signed-off-by: Alessio Faina <alessio.faina@canonical.com>")
 endfunction
 com! -nargs=0 CVEAddDefaultMessage :call CVEAddDefaultMessage()
+
+"VIMPLUG STUFF                                                                   
+"Remember to install git and other stuff beforehand
+"First time remember to run :PlugInstall
+
+if empty(glob('~/.vim/autoload/plug.vim'))                                       
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs                       
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim        
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC                        
+endif         
 
 call plug#begin()
 	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
