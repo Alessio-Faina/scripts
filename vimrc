@@ -129,6 +129,21 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC                        
 endif         
 
+function! AckSign()
+	call append(line('$'), "")
+	call append(line('$'), "Acked-by: Alessio Faina <alessio.faina@canonical.com>")
+endfunction
+com! -nargs=0 AckSign :call AckSign()
+
+function! CVEAddDefaultMessage()
+	g/Signed-off-by:/z#.1
+	call append(line('.'), "(backported from commit <sha1> <provenance>)")
+	call append(line('.')+1, "[alessiofaina: <brief explanation of what was changed and why>]")
+	call append(line('.')+2, "CVE-<number>")
+	call append(line('.')+3, "Signed-off-by: Alessio Faina <alessio.faina@canonical.com>")
+endfunction
+com! -nargs=0 CVEAddDefaultMessage :call CVEAddDefaultMessage()
+
 call plug#begin()
 	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 	Plug 'junegunn/fzf.vim'
