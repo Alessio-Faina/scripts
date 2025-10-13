@@ -2,6 +2,14 @@ filter.lfs.smudge=git-lfs smudge -- %f
 filter.lfs.process=git-lfs filter-process
 filter.lfs.required=true
 filter.lfs.clean=git-lfs clean -- %f
-alias.log1=log --oneline --decorate --graph --color --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(cyan)<%an>%C(reset)' --abbrev-commit
-alias.graphlog=log --graph --full-history --all --color --pretty=tformat:%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m
-credential.helper=cache --timeout=3600
+
+[alias]
+	log1=log --oneline --decorate --graph --color --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(cyan)<%an>%C(reset)' --abbrev-commit
+	graphlog=log --graph --full-history --all --color --pretty=tformat:%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m
+	logshort=log --oneline --decorate
+
+[core]
+	editor = vim
+
+[credential]
+	helper=cache --timeout=3600
