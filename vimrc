@@ -134,6 +134,20 @@ function! CVEAddDefaultMessage()
 endfunction
 com! -nargs=0 CVEAddDefaultMessage :call CVEAddDefaultMessage()
 
+function! AppliedPatch()
+	call append(line('$'), "")
+	call append(line('$'), "Applied to ")
+	call append(line('$'), "")
+	call append(line('$'), "Thanks!")
+	call append(line('$'), "- Alessio Faina")
+endfunction
+com! -nargs=0 AppliedPatch :call AppliedPatch()
+
+" Fugitive Conflict Resolution
+nnoremap <leader>gd :Gvdiff<CR>
+nnoremap gdh :diffget //2<CR>
+nnoremap gdl :diffget //3<CR>
+
 "VIMPLUG STUFF                                                                   
 "Remember to install git and other stuff beforehand
 "First time remember to run :PlugInstall
