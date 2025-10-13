@@ -148,6 +148,21 @@ parser.add_argument(
     help=r"do not remove \r from lines ending with \r\n",
 )
 parser.add_argument(
+    "--keep-mbox",
+    action="store_true",
+    default=False,
+    help="do not delete the mbox file",
+)
+
+parser.add_argument(
+    "--prefix",
+    type=str,
+    default="",
+    nargs=1,
+    help="add prefix in front of folder name",
+)
+
+parser.add_argument(
     "--url", "-u",
     type=str,
     default="",
@@ -168,6 +183,8 @@ if args.url:
     filename_gzip = download_patch(args.url[0])
     filename = filename_gzip[:-3]
     folder = filename[:-5]
+    if args.prefix:
+        folder = args.prefix[0] + folder
     os.mkdir(folder)
     with gzip.open(filename_gzip, 'rb') as f_in:
         with open(folder + "/" + filename, 'wb') as f_out:
@@ -186,6 +203,9 @@ if args.single:
     do_single(msg, sys.stdout.buffer)
 else:
     split_mbox(infile, do_single)
+
+if not args.keep_mbox:
+    os.remove(filename)
 
 if args.url:
     print("")
