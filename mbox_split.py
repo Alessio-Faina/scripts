@@ -48,9 +48,9 @@ def subj_to_name(subj):
     m = re.match(r"""\s* (\[ [^]]* \] )""", subj, re.X)
     num = 1
     if m:
-        m2 = re.search(r"""([0-9]+)/[0-9]+""", m.group(0), re.X)
+        m2 = re.search(r"(\[SRU\])(\[.*\])(\[PATCH\b.*\b)([0-9]+)\/([0-9]+)].*", subj, re.X)
         if m2:
-            num = int(m2.group(1))
+            num = int(m2.group(4))
         subj = subj[m.end() :]
 
     m = re.match(r"""\s* ( \[ [^]]* \] | \S+: )?""", subj, re.X)
@@ -92,16 +92,17 @@ def do_single(msg, outfile=None):
 
     container = msg.get_payload(0) if msg.is_multipart() else msg
     body = container.get_payload(decode=True)
-    if not args.keep_cr:
-        body = body.replace(b"\r\n", b"\n")
-    if not args.nopatch and not has_patch(body):
-        return
-    with outfile or open_output_file(msg) as f:
-        for k in ("From", "Subject", "Date", "Content-Type"):
-            if k in msg:
-                f.write(("%s: %s\n" % (k, header_to_string(msg[k]))).encode())
-        f.write(b"\n")
-        f.write(body)
+    if not body is None:
+        if not args.keep_cr:
+                body = body.replace(b"\r\n", b"\n")
+        if not args.nopatch and not has_patch(body):
+            return
+        with outfile or open_output_file(msg) as f:
+            for k in ("From", "Subject", "Date", "Content-Type"):
+                if k in msg:
+                    f.write(("%s: %s\n" % (k, header_to_string(msg[k]))).encode())
+            f.write(b"\n")
+            f.write(body)
 
 
 def split_mbox(stream, func):
