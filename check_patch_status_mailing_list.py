@@ -4,6 +4,7 @@
 
 import os
 import re
+import sys
 import urllib.request
 
 ktml_address:str = "http://ktml-board.kernel/archive/?q="
@@ -159,10 +160,23 @@ def check_patch_status(subject:str):
 
 #check_patch_status("CVE-2025-21855")
 #check_patch_status("CVE-2021-47269")
-if True:
+
+# By default, on myt setup, each CVE has a folder,
+# so use them as a list to check
+# By passing a filename tho, we can use that as a list
+#   In the file, each line needs to contain a CVE name e.g. CVE-2021-47269
+
+filename = ""
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+
+if filename == "":
     dirs = os.listdir(".")
     for item in dirs:
         if os.path.isdir(item):
             check_patch_status(item)
-
+else:
+    fp = open(filename)
+    for line in fp:
+        check_patch_status(line)
 
