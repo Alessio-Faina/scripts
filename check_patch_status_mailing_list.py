@@ -11,9 +11,9 @@ ktml_address:str = "http://ktml-board.kernel/archive/?q="
 def find_highest_patch_version(ktml_query_result):
     version = 1
     for line in ktml_query_result:
-        strline = line.decode("utf-8")
-        if "[PATCH v" in strline:
-            test_version = strline.split("[PATCH v")[1][:1]
+        strline = line.decode("utf-8").upper()
+        if "[PATCH V" in strline:
+            test_version = strline.split("[PATCH V")[1][:1]
             test_version_int = int(test_version)
             if test_version_int > version:
                 version = test_version_int
@@ -107,18 +107,18 @@ class status_per_series:
         for key in self.status_per_series.keys():
             series = self.status_per_series[key]
             result = "---> " + key + " -" + \
-                    " Status: ACKs: " + str(series.acks) + \
+                    " ACKs: " + str(series.acks) + \
                     " NACKs: " + str(series.nacks) + \
                     " CMNT: " + str(series.warning) + \
                     " APPLIED: " + str(series.applied)
             if series.applied > 0:
-                result += " APPLIED, can be moved to done"
+                result += " ----> APPLIED, can be moved to done"
             elif series.acks >1:
-                result += " ACKED, waiting for APPLIED status"
+                result += " ----> ACKED, waiting for APPLIED status"
             if series.warning > 0:
-                result += " WARNING: comments have been made: check"
+                result += " ----> WARNING: comments have been made: check"
             if series.nacks > 0:
-                result += " NACKED: check what happened"
+                result += " ----> NACKED: check what happened"
             print(result)
 
 
@@ -134,7 +134,7 @@ def check_patch_status(subject:str):
     fp = urllib.request.urlopen(url)
     mybytes = fp.readlines()
     latest_version = find_highest_patch_version(mybytes)
-    print("*** " + subject + " v" + latest_version)
+    print("\n*** " + subject + " v" + latest_version)
 
     for line in mybytes:
         strline = line.decode("utf-8").upper()
