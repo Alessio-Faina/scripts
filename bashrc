@@ -132,3 +132,91 @@ fi
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+        source /etc/profile.d/vte.sh
+fi
+
+# Set System Locale to enable scripts handling ABI files to make sure that
+# these files are not unnecessarily reordered.
+export LC_ALL=C.UTF-8
+
+# Helper to call debian/rules quickly
+alias fdr="fakeroot debian/rules"
+
+# Set shell variables so various Debian maintenance tools know your real name
+# and email address to use for packages
+export DEBEMAIL="alessio.faina@canonical.com"
+export DEBFULLNAME="Alessio Faina"
+
+# Set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+reboot() { echo "Don't do that, use SUDO"; }
+
+mbox_split() {
+	/home/$(whoami)/canonical/split-mbox/mbox_split.py --url $1
+}
+
+lxc_push_kernel_and_grub_modder() {
+	LXC_TARGET=$1
+	KERNEL=$2
+	lxc file push ~/canonical/ckct/utils/boot-kernel-simple $LXC_TARGET/root/
+	lxc file push $KERNEL $LXC_TARGET/root/
+}
+
+lxc_short_push_kernel_and_grub_modder() {
+	SERIES=$1
+	lxc file push ~/canonical/ckct/utils/boot-kernel-simple ubuntu-${SERIES}/root/
+	lxc file push ${SERIES}_amd64.tar.gz ubuntu-${SERIES}/root/
+}
+
+git_find_branch_for_commit() {
+	COMMIT=$1
+	git name-rev $COMMIT
+}
+
+git_find_all_branches_for_commit() {
+	COMMIT=$1
+	git branch -a --contains $COMMIT
+}
+
+cbd_remove_build() {
+	BUILD_ID=$1
+	ssh cbd rm $BUILD_ID
+}
+
+cbd_get_build_log() {
+	BUILD_ID=$1
+	ssh cbd cat $BUILD_ID/build.log > ./log
+}
+
+cbd_get_tarball() {
+	# Expects something like this alessiofaina-xenial-d34991cf60e2-glFs/amd64/
+	BUILD_ID_PLUS_ARCH=$1
+	DESTINATION=$2
+	FLAVOUR=$(echo $BUILD_ID_PLUS_ARCH} | cut -d'-' -f2)
+	ARCH=$(echo $BUILD_ID_PLUS_ARCH} | cut -d'/' -f2)
+	FILENAME=${FLAVOUR}_${ARCH}.tar.gz
+	echo "Writing ${FILENAME} in ${DESTINATION}"
+	ssh cbd tarball ${BUILD_ID_PLUS_ARCH} > ${DESTINATION}/${FILENAME}
+}
+
+git_send_test_mailing_list() {
+	git send-email --to alessio.faina@canonical.com *
+}
+
+git_format_patch() {
+	git format-patch --thread --cover-letter --subject-prefix="SRU][][PATCH" --output-directory=./OUTPUT $1
+}
+
+ktml_check_patch_status() {
+	cd ~/CVEs/IN_REVIEW
+	~/canonical/split-mbox/check_patch_status_mailing_list.py
+	cd -
+}
+
+export KTDB_ROOT_ARCHIVE_PATH="/home/$(whoami)/canonical/ktdb"
+export TESTFLINGER_SERVER="https://testflinger.canonical.com"
