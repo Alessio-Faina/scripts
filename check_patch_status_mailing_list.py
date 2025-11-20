@@ -144,21 +144,21 @@ def check_patch_status(subject:str):
             continue
       
         if latest_version == "1" or "[PATCH V" + latest_version in strline:
-            if "NACK:" in strline or "NACK/" in strline:
+            if "NACK:" in strline or "NACK/CMNT" in strline:
                 overall_stats.add_nack(series)
-            elif "ACK:" in strline or "ACK/" in strline:
+            elif "ACK:" in strline or "ACK/CMNT" in strline:
                 overall_stats.add_ack(series)
-            elif "CMNT:" in strline:
-                overall_stats.add_warning(series)
-            elif "APPLIED:" in strline:
+            elif "APPLIED:" in strline or "APPLIED/CMNT" in strline:
                 overall_stats.add_applied(series)
             else:
                 overall_stats.add_exists(series)
+            if "CMNT:" in strline:
+                overall_stats.add_warning(series)
 
     
     overall_stats.print_patch_status()
 
-#check_patch_status("CVE-2025-21855")
+#check_patch_status("CVE-2025-21722")
 #check_patch_status("CVE-2021-47269")
 
 # By default, on myt setup, each CVE has a folder,
