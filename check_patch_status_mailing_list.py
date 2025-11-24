@@ -132,7 +132,13 @@ def check_patch_status(subject:str):
     warning = 0
 
     url = ktml_address + subject
-    fp = urllib.request.urlopen(url)
+    try:
+        fp = urllib.request.urlopen(url)
+    except:
+        print("\n*** " + subject + " v" + "UNKN")
+        overall_stats.add_exists("[]")
+        overall_stats.print_patch_status()
+        return
     mybytes = fp.readlines()
     latest_version = find_highest_patch_version(mybytes)
     print("\n*** " + subject + " v" + latest_version)
