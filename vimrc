@@ -156,7 +156,14 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs                       
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim        
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC                        
-endif         
+endif
+
+" F2 = Switch to 2 spaces
+nnoremap <F2> :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>:echo "Indent: 2 spaces"<CR>
+" F3 = Switch to 4 spaces
+nnoremap <F3> :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>:echo "Indent: 4 spaces"<CR>
+" F4 = Switch to actual Tabs (set to 4 wide)
+nnoremap <F4> :set noexpandtab tabstop=4 shiftwidth=4 softtabstop=0<CR>:echo "Indent: Tabs (4)"<CR>
 
 call plug#begin()
 	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
