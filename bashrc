@@ -2,14 +2,6 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-export NO_AT_BRIDGE=1
-PATH=$PATH:/opt/android/platform-tools:/opt/android/tools/bin:/home/dladmin/bin/
-export ANDROID_HOME=/opt/android
-export ANDROID_NDK_ROOT=/opt/android-ndk-r16b/
-export NDK=/opt/android-ndk-r16b/
-export SYSROOT=$NDK/sysroot/
-export BOOST=/opt/boost_1_65_1/
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -68,12 +60,12 @@ parse_git_branch() {
  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 if [ "$color_prompt" = yes ]; then
-#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
+    #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)\$ '
-#   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
+
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
@@ -149,6 +141,7 @@ alias fdr="fakeroot debian/rules"
 export DEBEMAIL="alessio.faina@canonical.com"
 export DEBFULLNAME="Alessio Faina"
 
+export KTDB_ROOT_ARCHIVE_PATH="/home/alessio.faina@canonical.com/canonical/ktdb"
 # Set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -157,7 +150,7 @@ fi
 reboot() { echo "Don't do that, use SUDO"; }
 
 mbox_split() {
-	/home/$(whoami)/canonical/split-mbox/mbox_split.py --url $1
+	/home/$(whoami)/canonical/repos/scripts/mbox_split.py --url $1
 }
 
 lxc_push_kernel_and_grub_modder() {
@@ -171,6 +164,7 @@ lxc_short_push_kernel_and_grub_modder() {
 	SERIES=$1
 	lxc file push ~/canonical/ckct/utils/boot-kernel-simple ubuntu-${SERIES}/root/
 	lxc file push ${SERIES}_amd64.tar.gz ubuntu-${SERIES}/root/
+
 }
 
 git_find_branch_for_commit() {
@@ -214,9 +208,22 @@ git_format_patch() {
 
 ktml_check_patch_status() {
 	cd ~/CVEs/IN_REVIEW
-	~/canonical/split-mbox/check_patch_status_mailing_list.py
+	~/canonical/repos/scripts/check_patch_status_mailing_list.py
 	cd -
+}
+
+go_to_bug() {
+	BUG=$1
+	firefox https://bugs.launchpad.net/bugs/${BUG}
 }
 
 export KTDB_ROOT_ARCHIVE_PATH="/home/$(whoami)/canonical/ktdb"
 export TESTFLINGER_SERVER="https://testflinger.canonical.com"
+
+source ~/.cranky_cmds.sh
+source ~/.connections.sh
+
+# Created by `pipx` on 2026-01-07 09:30:06
+export PATH="$PATH:/home/alessio.faina@canonical.com/.local/bin"
+
+#alias ls='ls -n --color=auto'
