@@ -217,6 +217,71 @@ go_to_bug() {
 	firefox https://bugs.launchpad.net/bugs/${BUG}
 }
 
+sru_patch_add_acked_by() {
+	PERSON=$1
+	TYPE="Acked-by"
+	for patch in $(ls *.patch); do
+		sed -i "/^---$/i ${TYPE}: ${PERSON}" "$patch"
+	done
+}
+
+sru_patch_add_signed_off_by() {
+	PERSON="Alessio Faina <alessio.faina@canonical.com>"
+	TYPE="Signed-off-by"
+	for patch in $(ls *.patch); do
+		sed -i "/^---$/i ${TYPE}: ${PERSON}" "$patch"
+	done
+}
+
+battery_checkStatus() {
+	local BAT0=$(find /sys 2>/dev/null | grep "BAT0" | grep "power_supply" | head -n 1)
+	if [ $? -ne 0 ]; then
+		echo "No battery found"
+		exit 1
+	fi
+	echo "Battery found at ${BAT0}"
+
+	local MIN=$(cat ${BAT0}/charge_start_threshold)
+	local MAX=$(cat ${BAT0}/charge_stop_threshold)
+
+	echo "Battery charge limits: $MIN% - $MAX%"
+	echo "--------"
+	upower -i $(upower -e | grep BAT)
+	echo "--------"
+}
+
+battery_forceBatteryCharge() {
+	local BAT0=$(find /sys 2>/dev/null | grep "BAT0" | grep "power_supply" | head -n 1)
+	if [ $? -ne 0 ]; then
+			echo "No battery found"
+			exit 1
+	fi
+	echo "Battery found at ${BAT0}"
+
+	echo 0  | sudo tee ${BAT0}/charge_start_threshold > /dev/null
+	echo 80 | sudo tee ${BAT0}/charge_stop_threshold  > /dev/null
+
+	local MIN=$(cat ${BAT0}/charge_start_threshold)
+	local MAX=$(cat ${BAT0}/charge_stop_threshold)
+	echo "Battery charge limits set to ${MIN}% - ${MAX}%"
+}
+
+battery_standardCharge() {
+	local BAT0=$(find /sys 2>/dev/null | grep "BAT0" | grep "power_supply" | head -n 1)
+	if [ $? -ne 0 ]; then
+			echo "No battery found"
+			exit 1
+	fi
+	echo "Battery found at ${BAT0}"
+
+	echo 30 | sudo tee ${BAT0}/charge_start_threshold > /dev/null
+	echo 80 | sudo tee ${BAT0}/charge_stop_threshold  > /dev/null
+
+	local MIN=$(cat ${BAT0}/charge_start_threshold)
+	local MAX=$(cat ${BAT0}/charge_stop_threshold)
+	echo "Battery charge limits set to ${MIN}% - ${MAX}%"
+}
+
 export KTDB_ROOT_ARCHIVE_PATH="/home/$(whoami)/canonical/ktdb"
 export TESTFLINGER_SERVER="https://testflinger.canonical.com"
 
