@@ -7,7 +7,7 @@ set shiftwidth=2
 set ignorecase
 set smartcase
 set incsearch
-set number 
+set number
 set colorcolumn=81
 set tags=tags;
 set smartindent
@@ -77,7 +77,7 @@ hi vimOption ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE
 hi vimHiCtermFgBg ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE
 hi vimHiGuiFgBg ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE
 "highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
-"highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red 
+"highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
 "highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
 "highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
 
@@ -148,14 +148,14 @@ nnoremap <leader>gd :Gvdiff<CR>
 nnoremap gdh :diffget //2<CR>
 nnoremap gdl :diffget //3<CR>
 
-"VIMPLUG STUFF                                                                   
+"VIMPLUG STUFF
 "Remember to install git and other stuff beforehand
 "First time remember to run :PlugInstall
 
-if empty(glob('~/.vim/autoload/plug.vim'))                                       
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs                       
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim        
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC                        
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " F2 = Switch to 2 spaces
@@ -163,16 +163,46 @@ nnoremap <F2> :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>:echo "Inde
 " F3 = Switch to 4 spaces
 nnoremap <F3> :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>:echo "Indent: 4 spaces"<CR>
 " F4 = Switch to actual Tabs (set to 4 wide)
-nnoremap <F4> :set noexpandtab tabstop=4 shiftwidth=4 softtabstop=0<CR>:echo "Indent: Tabs (4)"<CR>
+nnoremap <F4> :set noexpandtab tabstop=8 shiftwidth=8 softtabstop=0<CR>:echo "Indent: Tabs (8)"<CR>
 
 call plug#begin()
-	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-	Plug 'junegunn/fzf.vim'
-	Plug 'vim-airline/vim-airline'
-	Plug 'vim-airline/vim-airline-themes'
-	Plug 'godlygeek/tabular'
-	Plug 'altercation/vim-colors-solarized'
-	Plug 'tpope/vim-fugitive'
-	Plug 'powerline/powerline'
-	Plug 'scrooloose/nerdtree'
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  Plug 'junegunn/fzf.vim'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'godlygeek/tabular'
+  Plug 'altercation/vim-colors-solarized'
+  Plug 'tpope/vim-fugitive'
+  Plug 'powerline/powerline'
+  Plug 'scrooloose/nerdtree'
+  Plug 'github/copilot.vim'
+  Plug 'tpope/vim-sensible'
+  if has('nvim')
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'CopilotC-Nvim/CopilotChat.nvim'
+  endif
 call plug#end()
+
+" --- NEOVIM-ONLY CONFIGURATION ---
+if has('nvim')
+    set mouse=a
+    nnoremap <leader>cc :CopilotChatToggle<CR>
+    " This Lua block will be ignored by standard Vim
+    lua << EOF
+    require("CopilotChat").setup({
+      model = 'claude-opus-4.5',  -- Use the latest Claude 4.5 OPU model
+        mappings = {
+					complete = {
+						insert = '',
+          },
+        },
+        window = {
+            layout = 'float',
+            relative = 'editor',
+            width = 0.8,        -- 80% of screen width
+            height = 0.8,       -- 80% of screen height
+            row = 1,            -- Offset from top
+        },
+    })
+EOF
+endif
