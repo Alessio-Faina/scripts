@@ -120,26 +120,26 @@ elseif has("python")
 endif
 
 function! AckSign()
-	call append(line('$'), "")
-	call append(line('$'), "Acked-by: Alessio Faina <alessio.faina@canonical.com>")
+  call append(line('$'), "")
+  call append(line('$'), "Acked-by: Alessio Faina <alessio.faina@canonical.com>")
 endfunction
 com! -nargs=0 AckSign :call AckSign()
 
 function! CVEAddDefaultMessage()
-	g/Signed-off-by:/z#.1
-	call append(line('.'), "(backported from commit <sha1> <provenance>)")
-	call append(line('.')+1, "[alessiofaina: <brief explanation of what was changed and why>]")
-	call append(line('.')+2, "CVE-<number>")
-	call append(line('.')+3, "Signed-off-by: Alessio Faina <alessio.faina@canonical.com>")
+  g/Signed-off-by:/z#.1
+  call append(line('.'), "(backported from commit <sha1> <provenance>)")
+  call append(line('.')+1, "[alessiofaina: <brief explanation of what was changed and why>]")
+  call append(line('.')+2, "CVE-<number>")
+  call append(line('.')+3, "Signed-off-by: Alessio Faina <alessio.faina@canonical.com>")
 endfunction
 com! -nargs=0 CVEAddDefaultMessage :call CVEAddDefaultMessage()
 
 function! AppliedPatch()
-	call append(line('$'), "")
-	call append(line('$'), "Applied to ")
-	call append(line('$'), "")
-	call append(line('$'), "Thanks!")
-	call append(line('$'), "- Alessio Faina")
+  call append(line('$'), "")
+  call append(line('$'), "Applied to ")
+  call append(line('$'), "")
+  call append(line('$'), "Thanks!")
+  call append(line('$'), "- Alessio Faina")
 endfunction
 com! -nargs=0 AppliedPatch :call AppliedPatch()
 
@@ -192,8 +192,8 @@ if has('nvim')
     require("CopilotChat").setup({
       model = 'claude-opus-4.5',  -- Use the latest Claude 4.5 OPU model
         mappings = {
-					complete = {
-						insert = '',
+          complete = {
+            insert = '',
           },
         },
         window = {
