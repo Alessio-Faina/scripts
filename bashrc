@@ -250,7 +250,7 @@ battery_checkStatus() {
 	echo "--------"
 }
 
-battery_forceBatteryCharge() {
+battery_forceCharge() {
 	local BAT0=$(find /sys 2>/dev/null | grep "BAT0" | grep "power_supply" | head -n 1)
 	if [ $? -ne 0 ]; then
 			echo "No battery found"
@@ -275,7 +275,7 @@ battery_standardCharge() {
 	echo "Battery found at ${BAT0}"
 
 	echo 30 | sudo tee ${BAT0}/charge_start_threshold > /dev/null
-	echo 80 | sudo tee ${BAT0}/charge_stop_threshold  > /dev/null
+	echo 50 | sudo tee ${BAT0}/charge_stop_threshold  > /dev/null
 
 	local MIN=$(cat ${BAT0}/charge_start_threshold)
 	local MAX=$(cat ${BAT0}/charge_stop_threshold)
