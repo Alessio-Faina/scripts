@@ -61,6 +61,9 @@
 0.0.0.0 array510.prod.do.dsp.mp.microsoft.com
 0.0.0.0 array517.prod.do.dsp.mp.microsoft.com
 0.0.0.0 array518.prod.do.dsp.mp.microsoft.com
+0.0.0.0 array604.prod.do.dsp.mp.microsoft.com
+0.0.0.0 array606.prod.do.dsp.mp.microsoft.com
+0.0.0.0 array612.prod.do.dsp.mp.microsoft.com
 0.0.0.0 array816.prod.do.dsp.mp.microsoft.com
 0.0.0.0 arc.msn.com
 0.0.0.0 a-ring-fallback.msedge.net
@@ -146,6 +149,7 @@
 0.0.0.0 feedback.windows.com
 0.0.0.0 flex.msn.com
 0.0.0.0 forms.microsoft.com
+0.0.0.0 fp.msedge.net
 0.0.0.0 functional.events.data.microsoft.com
 0.0.0.0 geover.prod.do.dsp.mp.microsoft.com
 0.0.0.0 geo.prod.do.dsp.mp.microsoft.com
@@ -158,6 +162,7 @@
 0.0.0.0 i1.services.social.microsoft.com.nsatc.net
 0.0.0.0 inference.location.live.com
 0.0.0.0 instrumentExport.cp.microsoft.com
+0.0.0.0 kv601.prod.do.dsp.mp.microsoft.com
 0.0.0.0 l-ring.msedge.net
 0.0.0.0 ln-ring.msedge.net
 0.0.0.0 l-ring-fallback.msedge.net
