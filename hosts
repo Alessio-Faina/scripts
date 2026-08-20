@@ -112,6 +112,8 @@
 0.0.0.0 config.edge.skype.com
 0.0.0.0 corp.sts.microsoft.com
 0.0.0.0 corpext.msitadfs.glbdns2.microsoft.com
+0.0.0.0 cp601.prod.do.dsp.mp.microsoft.com
+0.0.0.0 cp801.prod.do.dsp.mp.microsoft.com
 0.0.0.0 crl.microsoft.com
 0.0.0.0 cs1.wpc.v0cdn.net
 0.0.0.0 customervoice.microsoft.com
@@ -119,9 +121,8 @@
 0.0.0.0 db3wns2011111.wns.windows.com
 0.0.0.0 df.telemetry.microsoft.com
 0.0.0.0 diagnostics.support.microsoft.com
+0.0.0.0 disc601.prod.do.dsp.mp.microsoft.com
 0.0.0.0 disc801.prod.do.dsp.mp.microsoft.com
-0.0.0.0 cp801.prod.do.dsp.mp.microsoft.com
-0.0.0.0 kv801.prod.do.dsp.mp.microsoft.com
 0.0.0.0 dual-s-ring.msedge.net
 0.0.0.0 ec.atdmt.com
 0.0.0.0 ecs.office.com
@@ -163,6 +164,7 @@
 0.0.0.0 inference.location.live.com
 0.0.0.0 instrumentExport.cp.microsoft.com
 0.0.0.0 kv601.prod.do.dsp.mp.microsoft.com
+0.0.0.0 kv801.prod.do.dsp.mp.microsoft.com
 0.0.0.0 l-ring.msedge.net
 0.0.0.0 ln-ring.msedge.net
 0.0.0.0 l-ring-fallback.msedge.net
