@@ -198,6 +198,74 @@ cbd_get_tarball() {
 	ssh cbd tarball ${BUILD_ID_PLUS_ARCH} > ${DESTINATION}/${FILENAME}
 }
 
+git_get_send_email_command() {
+  # Generates a git send-email command with --to and --cc flags based on
+  # scripts/get_maintainer.pl output for a given patch file.
+  #
+  # Usage: gen_send_email.sh <patch_file>
+  # Must be run from the kernel source root (where scripts/ is available)
+  
+  set -e
+  
+  if [ $# -ne 1 ]; then
+      echo "Usage: $0 <patch_file>"
+			set +e
+      exit 1
+  fi
+  
+  PATCH="$1"
+  
+  if [ ! -f "${PATCH}" ]; then
+      echo "Error: patch file '${PATCH}' not found"
+			set +e
+      exit 1
+  fi
+  
+  output=$(scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback "${PATCH}" 2>/dev/null)
+  
+  lines=()
+  first_maintainer=1
+  
+  while IFS= read -r line; do
+      if [[ "${line}" =~ "maintainer" ]]; then
+          # Format: "Name" <email> (maintainer:...)
+          # or:     Name <email> (maintainer:...)
+          if [[ "${line}" =~ ^\"(.+)\"\ \<([^\>]+)\> ]]; then
+              name="${BASH_REMATCH[1]}"
+              email="${BASH_REMATCH[2]}"
+          elif [[ "${line}" =~ ^([^\<]+)\ \<([^\>]+)\> ]]; then
+              name=$(echo "${BASH_REMATCH[1]}" | sed 's/ *$//')
+              email="${BASH_REMATCH[2]}"
+          else
+              continue
+          fi
+  
+          if [ "${first_maintainer}" -eq 1 ]; then
+              lines+=("--to=\"${name} <${email}>\"")
+              first_maintainer=0
+          else
+              lines+=("--cc=\"${name} <${email}>\"")
+          fi
+      elif [[ "${line}" =~ "open list" ]] || [[ "${line}" =~ "mailing list" ]]; then
+          # Format: email@list.org (open list:...)
+          email=$(echo "${line}" | awk '{print $1}')
+          lines+=("--cc=\"${email}\"")
+      fi
+  done <<< "${output}"
+  
+  lines+=("${PATCH}")
+  
+  echo "git send-email \\"
+  for i in "${!lines[@]}"; do
+      if [ "$i" -lt $((${#lines[@]} - 1)) ]; then
+          echo "    ${lines[$i]} \\"
+      else
+          echo "    ${lines[$i]}"
+      fi
+  done
+	set +e
+}
+
 git_send_test_mailing_list() {
 	git send-email --to alessio.faina@canonical.com *
 }
@@ -284,11 +352,26 @@ battery_standardCharge() {
 
 export KTDB_ROOT_ARCHIVE_PATH="/home/$(whoami)/canonical/ktdb"
 export TESTFLINGER_SERVER="https://testflinger.canonical.com"
+export HOME="/home/afaina"
 
 source ~/.cranky_cmds.sh
 source ~/.connections.sh
 
 # Created by `pipx` on 2026-01-07 09:30:06
 export PATH="$PATH:/home/alessio.faina@canonical.com/.local/bin"
-
 #alias ls='ls -n --color=auto'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+alias __stonking='cd ~/ubuntu_kernels/stonking'
+alias __resolute='cd ~/ubuntu_kernels/resolute'
+alias __questing='cd ~/ubuntu_kernels/questing'
+alias __noble='cd ~/ubuntu_kernels/noble'
+alias __jammy='cd ~/ubuntu_kernels/jammy'
+alias __focal='cd ~/ubuntu_kernels/focal'
+alias __bionic='cd ~/ubuntu_kernels/bionic'
+alias __xenial='cd ~/ubuntu_kernels/xenial'
+alias __trusty='cd ~/ubuntu_kernels/trusty'
+alias __lmain='cd linux/linux-main'
