@@ -1,5 +1,5 @@
 # Add cranky tools to the PATH
-export PATH=$HOME/canonical/kteam-tools/cranky:$PATH
+#export PATH=$HOME/canonical/kteam-tools/cranky:$PATH
 export PATH=$HOME/canonical/kteam-tools/maintscripts:$PATH
 
 # Enable cranky bash auto-completion
@@ -12,6 +12,10 @@ source $HOME/canonical/kteam-tools/cranky/cranky-complete.bash
 # eval "$(_CRANKY_COMPLETE=bash_source cranky)"
 #
 
+cranky_update() {
+	uv tool upgrade cranky
+}
+
 alias swm-state="~/canonical/kteam-tools/stable/swm-ls"
 alias crankydocs="vim ~/canonical/kteam-tools/cranky/docs/cranking-the-kernel.md"
 clean() {
@@ -21,6 +25,17 @@ clean() {
 		git clean -fxd
 		popd
 	fi
+}
+
+cranky_add_tag() {
+	if [ $# -lt 1 ]
+	then
+		echo "Provide version to add tag"
+		exit 1
+	fi
+	VERS=$1
+	git remote add stable-upstream https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+	git fetch stable-upstream refs/tags/v${VERS}:refs/tags/v${VERS}
 }
 
 c00_clean_repo() {
@@ -127,7 +142,7 @@ c14_results_test_run() {
 }
 
 c15_update_depends() {
-	cranky update-dependents
+	cranky update-dependents --rollback
 #	cd linux-meta && cranky update-dependent && cd -
 #	cd linux-signed && cranky update-dependent && cd -
 #	cd linux-lrm && cranky update-dependent && cd -
@@ -148,6 +163,8 @@ c18_pull_sources_and_build() {
 }
 c19_review() {
 	cranky review *.changes
+	vim *_source.changes
+	vim *.debdiff
 }
 c20_debsign() {
 	debsign *_source.changes
@@ -159,6 +176,11 @@ c22_dput_spurces() {
 	REF=$1
 	#REF should be something like xenial:linux-oracle
 	cranky dput-sources auto ${REF}
+}
+c23_push_help() {
+	echo "cranky push-refs ."
+	echo "cranky dput-sources auto xenial:linux-oracle"
+	echo "check routing with cranky list-routing xenial:linux-oracle"
 }
 
 cranky_check_with_upstream() {
