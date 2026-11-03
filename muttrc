@@ -1,0 +1,42 @@
+set realname = 'Alessio Faina'
+set from = alessio.faina@canonical.com
+
+set sendmail = "/usr/bin/msmtp -a canonical"
+
+set imap_user = "alessio.faina@canonical.com"
+set folder    = imaps://imap.gmail.com/
+set imap_pass = `secret-tool lookup mail canonical`
+set imap_check_subscribed
+
+set spoolfile = "+INBOX"
+set postponed = "+[Gmail]/Drafts"
+set record = "+[Gmail]/Sent Mail"
+set trash = "+[Gmail]/Trash"
+
+set imap_keepalive = 300
+set mail_check = 120
+unset imap_passive
+
+set timeout = 10
+
+# Automatic ACK answer
+#macro pager <f1> `~/.mutt/autoreply.py --re ACK -s ~/.mutt/ack.sh`
+## Semi-automatic ACK/Cmnt answer
+macro pager <F3> `~/.mutt/autoreply.py --re ACK/Cmnt -s ~/.mutt/ack.sh --edit` "ACK"
+# Semi-automatic NACK answer (only subject is edited, explain why in reply)
+macro pager <F2> `~/.mutt/autoreply.py --re NAK --edit` "NACK"
+# Semi-automatic applied answer
+macro pager <F4> `~/.mutt/autoreply.py --re APPLIED --edit` "APPLIED"
+macro pager <F5> "q"
+
+macro pager <F6> "Acked-by: Alessio Faina <alessio.faina@canonical.com>" "SIGN"
+
+macro pager <f7> "echo > /tmp/test"
+
+# Pressing 'P' tags the thread, copies it to a specific folder, and untags it
+# macro index,pager P "<tag-thread><tag-prefix><copy-message>~/kernel-patches/series.mbox<enter><untag-pattern>.<enter>" "Save entire patch thread to kernel-patches"
+macro index,pager P "<enter-command>set my_pipe_split=\$pipe_split pipe_split=no pipe_sep=\"\\n__MUTT_PIPE_SEP__\\n\"<enter><tag-thread><tag-prefix><pipe-message>~/.local/bin/save-mbox.sh<enter><untag-pattern>.<enter><enter-command>set pipe_split=\$my_pipe_split<enter><enter-command>reset pipe_sep<enter>" "Save thread to named mbox"
+###############
+# CACHING
+set header_cache     =~/.mutt/cache/headers
+set message_cachedir =~/.mutt/cache/bodies
